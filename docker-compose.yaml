@@ -1,5 +1,6 @@
 services:
   blackjack:
+    container_name: blackjack_app
     build:
       context: ./blackjack
       dockerfile: Dockerfile
@@ -14,6 +15,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    networks:
+      - app-network
   db:
     container_name: blackshop_db
     image: mysql:8.0.32
