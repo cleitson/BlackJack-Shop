@@ -1,0 +1,33 @@
+services:
+  blackjack:
+    build:
+      context: ./blackjack
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./blackjack:/app
+      - /app/node_modules
+    environment:
+      NODE_ENV: development
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    container_name: blackshop_db
+    image: mysql:8.0.32
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "--silent"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 5s
+
+networks:
+  app-network:
+    driver: bridge
