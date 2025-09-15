@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -16,9 +15,46 @@ datasource db {
 
 model User {
   id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String?
-  password  String
+  userId    String   @unique
+  username  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  GameState GameState[]
+
+  GameHistory GameHistory[]
+}
+
+model Card {
+  id       Int    @id @default(autoincrement())
+  suit     String
+  value    String
+  code     String @unique
+}
+
+model GameState {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id])
+  state      GameStateEnum @default(IDLE)
+  playerHand String   @default("[]")
+  deck       String   @default("[]")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+enum GameStateEnum {
+  IDLE
+  PLAYING
+  BUST
+  FINISHED
+}
+
+model GameHistory {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  result    GameStateEnum @default(IDLE)
+  score     Int
 }

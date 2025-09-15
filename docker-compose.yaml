@@ -1,22 +1,22 @@
 services:
-  blackjack:
-    container_name: blackjack_app
-    build:
-      context: ./blackjack
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./blackjack:/app
-      - /app/node_modules
-    environment:
-      NODE_ENV: development
-    restart: unless-stopped
-    depends_on:
-      db:
-        condition: service_healthy
-    networks:
-      - app-network
+  # blackjack:
+  #   container_name: blackjack_app
+  #   build:
+  #     context: ./blackjack
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - ./blackjack:/app
+  #     - /app/node_modules
+  #   environment:
+  #     NODE_ENV: development
+  #   restart: unless-stopped
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+  #   networks:
+  #     - app-network
   db:
     container_name: blackshop_db
     image: mysql:8.0.32
