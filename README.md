@@ -45,9 +45,11 @@ Por padrao o front-end do /blackjack ira rodar no ```localhost:3000/```
 
 Na pasta ecommerce esta o backend com a função de login e as rotas relacionadas ao usuário
 <details>
-<summary> e possível acessar a documentação via Swagger </summary>
-na rota  ```localhost:3001/docs```
-![screenshot da pagina de documentação do swagger](swaggerRoutes.png)
+<summary> 
+    E possível acessar a documentação via Swagger na rota  localhost:3001/docs 
+</summary>
+<br>
+<img src="https://github.com/cleitson/BlackJack-Shop/blob/main/swaggerRoutes.png"></img>
 </details>
 
 <h1> 🚧 Readme em construcao 🚧</h1>
