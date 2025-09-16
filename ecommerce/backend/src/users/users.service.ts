@@ -4,8 +4,13 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import e from "express";
 import { PrismaService } from "src/prisma/prisma.service";
+import {
+  ResponseUserDto,
+  UserBalanceDto,
+  UserLogDto,
+} from "./dto/response-user.dto";
+import { UserCredit, UserDebit } from "./dto/user.dto";
 
 @Injectable()
 export class UsersService {
@@ -14,15 +19,15 @@ export class UsersService {
     private jwtService: JwtService
   ) {}
 
-  async findMe(token: string) {
+  async findMe(token: string): Promise<ResponseUserDto> {
     try {
       const decodedToken = await this.jwtService.verifyAsync(token);
 
       const user = await this.prisma.user.findUnique({
         where: { id: decodedToken.sub },
-        omit: { providerId: true }
+        omit: { providerId: true },
       });
-      
+
       if (!user) {
         throw new NotFoundException("User not found");
       }
@@ -33,7 +38,7 @@ export class UsersService {
     }
   }
 
-  async getUserBalance(token: string) {
+  async getUserBalance(token: string): Promise<UserBalanceDto> {
     try {
       const decodedToken = await this.jwtService.verifyAsync(token);
 
@@ -52,8 +57,12 @@ export class UsersService {
     }
   }
 
-  async postUserCredit(token: string, amount: number, roundId: number) {
+  async postUserCredit(
+    token: string,
+    userCredit: UserCredit
+  ): Promise<UserBalanceDto> {
     try {
+      const { amount, roundId } = userCredit;
       const decodedToken = await this.jwtService.verifyAsync(token);
 
       const user = await this.prisma.user.findUnique({
@@ -66,11 +75,21 @@ export class UsersService {
       if (amount <= 0) {
         throw new UnauthorizedException("Amount must be greater than zero");
       }
+      const log = await this.prisma.logs.findMany({
+        where: { userId: decodedToken.sub },
+      });
+      const roundIdJaExiste = log.some((entry) => entry.roundId === roundId);
+
+      if (roundIdJaExiste) {
+        throw new UnauthorizedException("Round ID already exists");
+      }
+
       const newBalance = await this.prisma.user.update({
         where: { id: user.id },
         data: { score: user.score + amount },
+        select: { score: true },
       });
-      
+
       await this.prisma.logs.create({
         data: {
           userId: user.id,
@@ -86,8 +105,13 @@ export class UsersService {
     }
   }
 
-  async postUserDebit(token: string, amount: number, orderId: number) {
+  async postUserDebit(
+    token: string,
+    userDebit: UserDebit
+  ): Promise<UserBalanceDto> {
     try {
+      const { amount, orderId } = userDebit;
+
       const decodedToken = await this.jwtService.verifyAsync(token);
 
       const user = await this.prisma.user.findUnique({
@@ -103,9 +127,19 @@ export class UsersService {
       if (user.score - amount < 0) {
         throw new UnauthorizedException("Insufficient balance");
       }
+
+      const log = await this.prisma.logs.findMany({
+        where: { userId: decodedToken.sub },
+      });
+      const roundIdJaExiste = log.some((entry) => entry.orderId === orderId);
+
+      if (roundIdJaExiste) {
+        throw new UnauthorizedException("Order ID already exists");
+      }
       const newBalance = await this.prisma.user.update({
         where: { id: user.id },
         data: { score: user.score - amount },
+        select: { score: true },
       });
       await this.prisma.logs.create({
         data: {
@@ -121,14 +155,14 @@ export class UsersService {
     }
   }
 
-  async getLogs(token: string) {
+  async getLogs(token: string): Promise<UserLogDto[]> {
     try {
       const decodedToken = await this.jwtService.verifyAsync(token);
 
       const user = await this.prisma.user.findUnique({
         where: { id: decodedToken.sub },
       });
-      
+
       if (!user) {
         throw new NotFoundException("User not found");
       }

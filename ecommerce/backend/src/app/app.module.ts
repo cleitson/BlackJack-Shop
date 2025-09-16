@@ -8,7 +8,7 @@ import { AuthMiddleware } from 'src/common/middlewares/auth.middleware';
 import { JwtModule } from '@nestjs/jwt';
 @Module({
   imports: [UsersModule, PrismaModule, AuthModule, JwtModule.register({
-        secret: process.env.JWT_SECRET || 'your-secret-key',
+        secret: process.env.JWT_SECRET_BACKEND_E || 'your-secret-key',
         signOptions: { expiresIn: '1h' },
       })],
   controllers: [AppController],

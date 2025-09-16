@@ -1,22 +1,5 @@
+#Docker compose
 services:
-  # blackjack:
-  #   container_name: blackjack_app
-  #   build:
-  #     context: ./blackjack
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "3000:3000"
-  #   volumes:
-  #     - ./blackjack:/app
-  #     - /app/node_modules
-  #   environment:
-  #     NODE_ENV: development
-  #   restart: unless-stopped
-  #   depends_on:
-  #     db:
-  #       condition: service_healthy
-  #   networks:
-  #     - app-network
   db:
     container_name: blackshop_db
     image: mysql:8.0.32
@@ -30,6 +13,62 @@ services:
       retries: 5
       start_period: 30s
       timeout: 5s
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - app-network
+  blackjack:
+    container_name: blackjack_app
+    build:
+      context: ./blackjack
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./blackjack:/app
+      - /app/node_modules
+    command: sh -c "npx prisma migrate dev && npm run dev"
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=${DATABASE_URL_BLACKJACK}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - BACKEND_URL=${BACKEND_URL}
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app-network
+  
+  backend-ecommerce:
+    container_name: ecommerce_backend
+    build:
+      context: ./ecommerce/backend
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./ecommerce/backend:/app
+      - /app/node_modules
+    command: sh -c "npx prisma migrate dev && npm run start:dev"
+    environment:
+      - NODE_ENV=development
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - JWT_SECRET_BACKEND_E=${JWT_SECRET_BACKEND_E}
+      - PORT_BACKEND_E=${PORT_BACKEND_E}
+      - DATABASE_URL=${DATABASE_URL_BACKEND_E}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app-network
+volumes:
+  db_data:
+
 
 networks:
   app-network:

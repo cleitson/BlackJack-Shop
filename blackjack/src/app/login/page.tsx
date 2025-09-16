@@ -1,17 +1,5 @@
 "use client";
-import { useAuth } from "@/contexts/AuthContext";
-import { useRouter } from "next/router";
-import React, { useEffect } from "react";
-
 export default function LoginPage() {
-  const { user } = useAuth();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (user) {
-      router.push("/blackjack");
-    }
-  }, [user, router]);
 
   
   const handleGoogleLogin = () => {

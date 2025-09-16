@@ -1,12 +1,14 @@
 import { Controller, Get, UseGuards, Req, Res } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { AuthService } from "./auth.service";
+import { ApiOperation } from "@nestjs/swagger";
 
 @Controller("auth")
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
   @Get("google")
   @UseGuards(AuthGuard("google"))
+  @ApiOperation({summary: "Redirect to page auth with google on front-end"})
   async googleAuth(@Req() req) {
     console.log("Iniciando autenticação com Google");
     // Inicia o fluxo de autenticação do Google
@@ -15,6 +17,7 @@ export class AuthController {
 
   @Get("google/callback")
   @UseGuards(AuthGuard("google"))
+  @ApiOperation({summary: "Return to home page on front end after login successfully"})
   googleAuthRedirect(@Req() req, @Res({ passthrough: true }) res) {
     if (!req.user) {
       throw new Error("Usuário não autenticado");

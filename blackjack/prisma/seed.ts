@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-const suits = ['♠️', '♥️', '♦️', '♣️']
+const suits = ['spades', 'hearts', 'diamonds', 'clubs']
 const values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
 
 async function main() {
@@ -10,7 +10,7 @@ async function main() {
     values.map(value => ({
       suit,
       value,
-      code: `${value}${suit}`,
+      code: `${value}-${suit}`,
     }))
   )
 
