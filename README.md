@@ -1,4 +1,42 @@
 <h1> 🚧 Readme em construcao 🚧</h1>
+
+## Instalação
+
+>[!WARNING]
+> É necessário ter o Docker-compose instalado no computador. Para mais informações, consulte [Docker Docs](https://docs.docker.com/desktop/install/windows-install/)
+
+
+> [!IMPORTANT]
+> **ATENÇÃO**: Para usar o metodo de autenticacao Auth do google e preciso ter um projeto para adquirir as chaves GOOGLE_CLIENT_ID e
+GOOGLE_CLIENT_SECRET. [Iniciar um projeto](https://console.cloud.google.com/)
+
+
+> [!NOTE]
+> Adicionar as variaveis de ambiente na pasta raiz do projeto de acordo com .env.example
+
+Siga os passos abaixo para instalar e configurar o projeto localmente:
+
+1. Clone o repositório:
+
+    ```bash
+    git clone https://github.com/cleitson/BlackJack-Shop.git
+    ```
+
+2. Entre no diretório do projeto:
+
+    ```bash
+    cd BlackJack-Shop
+    ```
+
+3. Executar projeto:
+
+    ```bash
+    docker compose up --build -d
+    ```
+
+## Como Usar
+
+
 <details>
 <summary>
   🧑‍💻 Teste Técnico — Desenvolvedor Full Stack Júnior
