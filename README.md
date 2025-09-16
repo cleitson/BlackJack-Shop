@@ -36,6 +36,24 @@ Siga os passos abaixo para instalar e configurar o projeto localmente:
 
 ## Como Usar
 
+Por padrao o front-end do /blackjack ira rodar no ```localhost:3000/```
+> [!CAUTION]
+> Nesse momento esta funcionando apenas o link de login que chama o backend para autenticar com o google e retorna o Cookie HttpOnly com o JWT para autenticar nas rotas do backend
+
+> [!CAUTION]
+> Ainda nao implementado o front-end de ecommerce
+
+Na pasta ecommerce esta o backend com a função de login e as rotas relacionadas ao usuário
+<details>
+<summary> e possível acessar a documentação via Swagger </summary>
+na rota  ```localhost:3001/docs```
+![screenshot da pagina de documentação do swagger](swaggerRoutes.png)
+</details>
+
+<h1> 🚧 Readme em construcao 🚧</h1>
+
+<br><br><br><br>
+
 
 <details>
 <summary>
