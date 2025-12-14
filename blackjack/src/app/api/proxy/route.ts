@@ -17,3 +17,9 @@ export async function GET() {
   const data = await res.json();
   return Response.json(data);
 }
+
+export async function DELETE() {
+  const cookieStore = await cookies();
+  cookieStore.delete("accessToken");
+  return new Response(null, { status: 204 });
+}

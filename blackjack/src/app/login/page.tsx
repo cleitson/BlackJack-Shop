@@ -1,7 +1,11 @@
 "use client";
+
+import { useAuth } from "@/context/AuthContext";
+
 export default function LoginPage() {
 
-  
+  const { login } = useAuth();
+
   const handleGoogleLogin = () => {
     window.location.href = "http://localhost:3001/auth/google";
   };

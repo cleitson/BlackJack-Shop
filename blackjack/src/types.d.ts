@@ -20,7 +20,8 @@ export interface AuthState {
 }
 
 export interface AuthActions {
+  login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>
 }
 
-export type AuthContextType = AuthState & AuthActions
+export interface AuthContextType extends AuthState, AuthActions {}
